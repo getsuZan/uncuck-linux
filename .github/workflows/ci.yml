@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install bats + shellcheck
+        run: sudo apt-get update && sudo apt-get install -y bats shellcheck
+      - name: Install shfmt
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - run: go install mvdan.cc/sh/v3/cmd/shfmt@latest
+      - name: shellcheck
+        run: shellcheck -S error unomarchy.sh lib/*.sh tests/helper.bash tests/*.bats
+      - name: no eval outside comments
+        run: |
+          if grep -rn '\beval\b' --include='*.sh' unomarchy.sh lib/ tests/ | grep -v ':[[:space:]]*#'; then
+            echo "eval found outside comments"; exit 1
+          fi
+      - name: shfmt
+        run: test -z "$(shfmt -l -i 2 unomarchy.sh lib/*.sh tests/helper.bash tests/*.bats)"
+      - name: bats
+        run: bats tests/
+      - name: help smoke
+        run: bash unomarchy.sh --help && bash unomarchy.sh --version
+
+  arch-dry-run:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install bats
+        run: pacman -Syu --noconfirm --needed bats sudo
+      - name: bats (arch)
+        run: bats tests/
+      - name: dry-run smoke (vanilla arch guard + force)
+        run: |
+          bash unomarchy.sh --dry-run 2>&1 | grep -q "no omarchy install found" && echo GUARD_OK
+          bash unomarchy.sh --dry-run --force --only-step=verify --yes < /dev/null

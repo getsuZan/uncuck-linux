@@ -1,0 +1,23 @@
+# Build / backup artifacts
+unomarchy-backup-*/
+*.log
+*.tar
+
+# Test fixtures scratch
+tests/fixtures/tmp/
+tests/tmp/
+
+# Editor / OS noise
+*.swp
+*.swo
+*~
+.DS_Store
+.idea/
+.vscode/
+
+# Personal cheatsheet, not part of the project — keep untracked
+bash-style-guide-main/
+
+# Local env overrides
+.env
+.envrc.local
