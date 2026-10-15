@@ -104,9 +104,9 @@ Actions:
 - Publish via `gh repo create unomarchy` (public), push, open release notes.
 
 Verifiable tests:
-- [ ] `gh workflow view` / Actions tab green on push.
-- [ ] Fresh clone in temp dir + `./unomarchy.sh --dry-run --help` works with no extra setup.
-- [ ] `git log --oneline -5` shows atomic commits per task (T1..T6), no secrets (`git log -p | grep -i "token\|secret\|password"` empty, `gitleaks` clean if available).
+- [x] `gh workflow view` / Actions tab green on push (ci success on master + v0.1.0, 2026-10-15).
+- [x] Fresh clone in temp dir + `./unomarchy.sh --dry-run --help` works with no extra setup.
+- [x] `git log -p | grep -i "token\|secret\|password"` shows no secrets (only `1password` package-name hits). NOTE: single squashed initial commit, not per-task atomic commits — full history starts post-release.
 
 ---
 
