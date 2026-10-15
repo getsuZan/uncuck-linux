@@ -184,6 +184,8 @@ source "$SCRIPT_DIR/lib/pkg.sh"
 source "$SCRIPT_DIR/lib/config.sh"
 # shellcheck source=lib/verify.sh
 source "$SCRIPT_DIR/lib/verify.sh"
+# shellcheck source=lib/rice.sh
+source "$SCRIPT_DIR/lib/rice.sh"
 
 case "$TUI_BACKEND" in
 auto | gum | whiptail | select) ;;
@@ -202,8 +204,9 @@ step_fn() {
   pkgs) echo handle_packages ;;
   configs) echo strip_configs ;;
   verify) echo verify ;;
+  rice) echo import_rice ;;
   *)
-    echo "unknown step: $1 (want preflight,backup,pacman,sddm,pkgs,configs,verify)" >&2
+    echo "unknown step: $1 (want preflight,backup,pacman,sddm,pkgs,configs,verify,rice)" >&2
     exit 1
     ;;
   esac
@@ -216,13 +219,12 @@ main() {
   fi
   if [[ -n "$IMPORT_RICE" ]]; then
     if [[ -z "$RICE_REF" ]]; then
-      echo "--import-rice requires --rice-ref (pinned ref, PLAN T8)" >&2
+      echo "--import-rice requires --rice-ref (pinned ref)" >&2
       exit 1
     fi
-    echo "rice import not yet implemented (PLAN T8). Uninstall steps still available without --import-rice." >&2
-    exit 1
   fi
   local steps=(preflight backup pacman sddm pkgs configs verify)
+  if [[ -n "$IMPORT_RICE" ]]; then steps+=(rice); fi
   if [[ -n "$ONLY_STEP" ]]; then
     IFS=',' read -r -a steps <<<"$ONLY_STEP"
   fi

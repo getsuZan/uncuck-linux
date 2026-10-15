@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- Rice import (`--import-rice URL --rice-ref REF [--rice-dir] [--rice-exec]`): clones pinned ref, records SHA in `$BACKUP_DIR/rice.log`, copies allowlisted entries (overwritten targets backed up to `$BACKUP_DIR/rice-prev/`), installs `packages.txt` in one pacman transaction, root-level `.sh` only via Run/Copy/Abort prompt (`--yes` = copy-only, `--rice-exec` opts in non-interactively), non-GitHub URLs need `--force`, `--dry-run` previews without cloning.
+- `tests/test_rice.bats`: 7 tests (allowlist, hook opt-in, nested refusal, URL guard, dry-run purity, non-empty abort, bad-entry abort).
+
 ## [0.1.0] - 2026-10-15
 ### Added
 - `lib/` split (`safe backup pacman sddm pkg config verify`) + thin dispatcher with `--only-step`, `--force` (vanilla-Arch leftover cleanup), `--kb/--term/--no-reflector`.

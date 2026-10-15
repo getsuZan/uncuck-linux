@@ -72,16 +72,18 @@ After stripping it writes a minimal `~/.config/hypr/hyprland.conf` skeleton (exi
   -h, --help                this help
 ```
 
-## Rice import (T8, deferred)
+## Rice import
 
 ```bash
 ./unomarchy.sh --import-rice https://github.com/you/rice --rice-ref v1.0.0
 ```
 
 Rice = plain dotfiles dir + optional `packages.txt` (one `repo/pkg` per line).
-Only allowlisted config dirs are copied; root-level `*.sh` triggers a
-Run / Copy-only / Abort prompt (copy-only is the default; `--yes` never
-auto-runs scripts).
+Only allowlisted config dirs are copied (existing targets backed up to
+`$BACKUP_DIR/rice-prev/`); root-level `*.sh` triggers a Run / Copy-only /
+Abort prompt (copy-only is the default; `--yes` never auto-runs scripts —
+pass `--rice-exec <file>` to run one non-interactively). Non-GitHub URLs
+need `--force`. Rollback: `tar -xf $BACKUP_DIR/dotfiles.tar -C ~`.
 
 ## TUI (T9, deferred)
 

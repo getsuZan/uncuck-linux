@@ -18,6 +18,9 @@ tests/tmp/
 # Personal cheatsheet, not part of the project — keep untracked
 bash-style-guide-main/
 
+# Internal planning doc, not for public
+PLAN.md
+
 # Local env overrides
 .env
 .envrc.local
