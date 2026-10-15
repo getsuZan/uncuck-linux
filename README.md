@@ -85,12 +85,17 @@ Abort prompt (copy-only is the default; `--yes` never auto-runs scripts —
 pass `--rice-exec <file>` to run one non-interactively). Non-GitHub URLs
 need `--force`. Rollback: `tar -xf $BACKUP_DIR/dotfiles.tar -C ~`.
 
-## TUI (T9, deferred)
+## TUI
 
 ```bash
 ./unomarchy.sh --tui              # auto: gum > whiptail > select
 ./unomarchy.sh --tui=whiptail     # force backend
 ```
+
+Walks package groups, backup dir, rice URL/ref (+ root `.sh` Run/Copy/Skip
+choice), then a final Proceed gate. Answers are logged as equivalent CLI
+flags to `$BACKUP_DIR/tui-flags.log`; `--tui --yes` skips the questionnaire
+and uses defaults. ESC/EOF aborts before anything is mutated.
 
 ## Safety model
 

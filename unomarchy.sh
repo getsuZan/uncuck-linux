@@ -27,7 +27,7 @@ Usage: $0 [options]
   --dry-run                 preview only, no changes, never prompts
   --yes                     non-interactive, use pinned defaults
   --backup-dir=DIR          backup destination (also: --backup-dir DIR)
-  --only-step=STEPS         comma list: preflight,backup,pacman,sddm,pkgs,configs,verify
+  --only-step=STEPS         comma list: preflight,backup,pacman,sddm,pkgs,configs,verify,rice
   --force                   rerun allowed; bypass omarchy-presence check (vanilla Arch cleanup)
   --kb=LAYOUT               keyboard layout override (also: --kb LAYOUT)
   --term=TERM                terminal override for skeleton (also: --term TERM)
@@ -186,6 +186,8 @@ source "$SCRIPT_DIR/lib/config.sh"
 source "$SCRIPT_DIR/lib/verify.sh"
 # shellcheck source=lib/rice.sh
 source "$SCRIPT_DIR/lib/rice.sh"
+# shellcheck source=lib/tui.sh
+source "$SCRIPT_DIR/lib/tui.sh"
 
 case "$TUI_BACKEND" in
 auto | gum | whiptail | select) ;;
@@ -214,8 +216,7 @@ step_fn() {
 
 main() {
   if [[ -n "$TUI_MODE" ]]; then
-    echo "TUI not yet implemented (PLAN T9). Run without --tui." >&2
-    exit 1
+    run_tui || exit 1
   fi
   if [[ -n "$IMPORT_RICE" ]]; then
     if [[ -z "$RICE_REF" ]]; then

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Rice import (`--import-rice URL --rice-ref REF [--rice-dir] [--rice-exec]`): clones pinned ref, records SHA in `$BACKUP_DIR/rice.log`, copies allowlisted entries (overwritten targets backed up to `$BACKUP_DIR/rice-prev/`), installs `packages.txt` in one pacman transaction, root-level `.sh` only via Run/Copy/Abort prompt (`--yes` = copy-only, `--rice-exec` opts in non-interactively), non-GitHub URLs need `--force`, `--dry-run` previews without cloning.
 - `tests/test_rice.bats`: 7 tests (allowlist, hook opt-in, nested refusal, URL guard, dry-run purity, non-empty abort, bad-entry abort).
+- TUI (`--tui[=gum|whiptail|select]`, priority gum > whiptail > bash select): questionnaire drives the same engine via `TUI_G_*` overrides, rice early-clone with Run/Copy/Skip/Abort on real `.sh` list, flags logged to `$BACKUP_DIR/tui-flags.log`, ESC/EOF aborts pre-mutation, `--yes` uses defaults.
+- `tests/test_tui.bats`: 7 tests (backend priority hermetic, select flow, abort disarms engine, TUI var precedence, whiptail checklist parse, closed-stdin abort with zero side effects).
 
 ## [0.1.0] - 2026-10-15
 ### Added

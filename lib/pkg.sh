@@ -3,9 +3,14 @@
 # Sourced by unomarchy.sh. Requires lib/safe.sh helpers.
 # GPL-3.0.
 
-prompt_group() { # $1=label $2=default(Y/N) $3...=pkgs -> echoes selected pkgs
-  local label="$1" def="$2"
-  shift 2
+prompt_group() { # $1=label $2=default(Y/N) $3=tui-var(or "") $4...=pkgs -> echoes selected pkgs
+  local label="$1" def="$2" tuivar="$3"
+  shift 3
+  # TUI answers win over defaults/prompts (also under --dry-run previews).
+  if [[ -n "${TUI_MODE:-}" && -n "$tuivar" && -n "${!tuivar:-}" ]]; then
+    if [[ "${!tuivar}" =~ ^[Yy]$ ]]; then echo "$*"; else echo ""; fi
+    return 0
+  fi
   if is_dry; then
     # Deterministic preview: pinned default, no prompt.
     if [[ "$def" =~ ^[Yy]$ ]]; then echo "$*"; else echo ""; fi
@@ -32,34 +37,34 @@ handle_packages() {
 
   # groups: default N = keep, default Y = remove. tune freely.
   local sel
-  sel=$(prompt_group "browsers+chat (chromium firefox-bin signal-desktop spotify)" N chromium firefox-bin signal-desktop spotify)
+  sel=$(prompt_group "browsers+chat (chromium firefox-bin signal-desktop spotify)" N TUI_G_BROWSERS chromium firefox-bin signal-desktop spotify)
   if [[ -n "$sel" ]]; then
     read -r -a _parts <<<"$sel"
     REMOVE+=("${_parts[@]}")
   fi
-  sel=$(prompt_group "media (mpv imv kdenlive obs-studio pinta satty gpu-screen-recorder)" N mpv imv kdenlive obs-studio pinta satty gpu-screen-recorder)
+  sel=$(prompt_group "media (mpv imv kdenlive obs-studio pinta satty gpu-screen-recorder)" N TUI_G_MEDIA mpv imv kdenlive obs-studio pinta satty gpu-screen-recorder)
   if [[ -n "$sel" ]]; then
     read -r -a _parts <<<"$sel"
     REMOVE+=("${_parts[@]}")
   fi
-  sel=$(prompt_group "office (libreoffice-fresh evince typora obsidian xournalpp gnome-calculator)" N libreoffice-fresh evince typora obsidian xournalpp gnome-calculator)
+  sel=$(prompt_group "office (libreoffice-fresh evince typora obsidian xournalpp gnome-calculator)" N TUI_G_OFFICE libreoffice-fresh evince typora obsidian xournalpp gnome-calculator)
   if [[ -n "$sel" ]]; then
     read -r -a _parts <<<"$sel"
     REMOVE+=("${_parts[@]}")
   fi
-  sel=$(prompt_group "docker+db (docker docker-buildx docker-compose lazydocker)" N docker docker-buildx docker-compose lazydocker)
+  sel=$(prompt_group "docker+db (docker docker-buildx docker-compose lazydocker)" N TUI_G_DOCKER docker docker-buildx docker-compose lazydocker)
   if [[ -n "$sel" ]]; then
     read -r -a _parts <<<"$sel"
     REMOVE+=("${_parts[@]}")
   fi
-  sel=$(prompt_group "omarchy helpers (walker elephant impala swayosd wl-clipboard satty grim slurp hyprpicker)" Y walker elephant impala swayosd wl-clipboard satty grim slurp hyprpicker)
+  sel=$(prompt_group "omarchy helpers (walker elephant impala swayosd wl-clipboard satty grim slurp hyprpicker)" Y TUI_G_HELPERS walker elephant impala swayosd wl-clipboard satty grim slurp hyprpicker)
   if [[ -n "$sel" ]]; then
     read -r -a _parts <<<"$sel"
     REMOVE+=("${_parts[@]}")
   fi
-  sel=$(prompt_group "webapps+tuis (chromium webapps, tui meta)" Y)
+  sel=$(prompt_group "webapps+tuis (chromium webapps, tui meta)" Y "")
   : # placeholder; webapps are .desktop files, handled in strip_configs
-  sel=$(prompt_group "1password/claude TUIs (1password-beta 1password-cli claude-code)" N 1password-beta 1password-cli claude-code)
+  sel=$(prompt_group "1password/claude TUIs (1password-beta 1password-cli claude-code)" N TUI_G_TUIS 1password-beta 1password-cli claude-code)
   if [[ -n "$sel" ]]; then
     read -r -a _parts <<<"$sel"
     REMOVE+=("${_parts[@]}")
